@@ -1,0 +1,125 @@
+.data
+
+zeroFloat: .float 0.0
+symbol: .asciiz "0x"
+espaco: .asciiz "\n"
+positive: .asciiz "+\n"
+negative: .asciiz "-\n"
+hexresult:  .space  8
+	
+	.text
+main:
+    li $v0, 6
+    syscall
+  move $t0,$v0
+  
+  
+    
+float:
+  lw $v0,1
+  mtc1 $v0,$f1
+  cvt.s.w $f1,$f1
+  
+  li $v0,4
+  syscall
+ li $v0,2
+ mov.s $f12,$f1
+ syscall
+ cvt.w.s $f1,$f1
+ mtc1 $v0,$f1
+
+    
+    
+    mfc1 $t8 $f0 
+    
+    ori  $t0 $zero 0x1
+    sll  $t0 $t0 31 
+    and  $a0 $t0 $t8
+    srl  $a0 $a0 31
+    add  $t1, $zero, $a0
+    beq  $a0, 0, Positive
+    bne  $a0, 0, Negative
+    
+    
+teste:
+    
+    ori  $t0 $zero 0xFF
+    sll  $t0 $t0 23
+    and  $a0 $t0 $t8
+    srl  $a0 $a0 23
+    addi  $t3, $zero, 127
+    sub $a0, $a0, $t3
+    
+    addi $v0 $zero 1
+    syscall
+
+    li $v0, 4 
+    la $a0, espaco
+    syscall
+
+   	
+    li $v0, 4
+    la $a0, symbol
+    syscall
+
+  
+    
+    ori  $t0 $zero 0xFFFF
+    sll  $t0 $t0 7
+    ori  $t0 $t0 0x7F
+    and  $a0 $t0 $t8
+    jal hex
+   	
+    li $v0, 4 
+    la $a0, espaco
+    syscall
+ 
+    li $v0, 10
+    syscall
+Positive:
+    add $t4, $zero, $a0
+    li $v0, 4 
+    la $a0, positive
+    syscall
+    beqz $ra, teste
+	li $v0, 10
+    syscall
+Negative:
+    add $t4, $zero, $a0
+    li $v0, 4 
+    la $a0, negative
+    syscall
+    beqz $ra, teste
+	li $v0, 10
+    syscall
+hex:    
+    sub $sp, $sp, 24           
+    sw $a0, 0($sp)
+    sw $s0, 4($sp)
+    sw $s1, 8($sp)
+    sw $s2, 12($sp)
+    sw $s3, 16($sp)
+    sw $s4, 20($sp)
+    move $s2, $a0               
+    li $s0, 8                  
+    la $s3, hexresult           
+
+hexloop:
+    rol $s2, $s2, 4             
+    and $s1, $s2, 0xf
+    ble $s1, 9, hexprint        
+    add $s1, $s1, 7             
+
+hexprint:
+    add $s1, $s1, 48            
+    sb $s1,($s3)                
+    add $s3, $s3, 1             
+    add $s0, $s0, -1            
+    bnez $s0, hexloop           
+    
+    la $a0, hexresult          
+    li $v0, 4
+    syscall
+    
+
+    jr $ra     

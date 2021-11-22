@@ -1,0 +1,115 @@
+# Iago Theóphilo de Lima 160124751
+# Daniela Soares 180015222
+main:
+
+	.data
+	#Pegar todas as letrar e numeros
+base: .byte    'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','0','1','2','3','4','5','6','7','8','9','+','/'
+space: .space 35
+fimString: .word 0
+
+	.text
+## Fazer leitura
+	li $v0,8	
+	la $a0, space 	
+	li $a1, 33	
+	move $t0,$a0 	
+	syscall
+	li $t8, 10	
+	lb $t9, fimString
+for:
+	lb $t1, 0($t0)
+	beq $t1, $t8, fim
+	beq $t1, $t9, fim
+	andi $t4, $t1, 0xFF
+	
+	sll $t4, $t4, 8
+	addi $t1, $zero, 0
+	
+	lb $t2, 1($t0)
+	beq $t2, $t8, invalida2
+	beq $t2, $t9, invalida2
+	
+## Faz a verificação
+veri3:
+	andi $t5, $t2, 0xFF
+	
+	add $t4, $t4, $t5
+	sll $t4, $t4, 8
+	addi $t2, $zero, 0
+
+	lb $t3, 2($t0)
+	beq $t3, $t8, invalida3
+	beq $t3, $t9, invalida3
+	
+depoisValida:
+	andi $t5, $t3, 0xFF
+
+	
+	add $t4, $t4, $t5
+	
+	addi $a0, $t4, 0
+
+	addi $t3, $t4, 0
+	jal mudaBase
+	addi $t0, $t0, 3
+	j for
+
+invalida2:
+	addi $t2, $zero, 0
+	addi $t1, $zero, 1
+	j veri3
+invalida3:
+	addi $t3, $zero, 0
+	addi $t2, $zero, 1
+	j depoisValida	
+
+mudaBase:
+	addi $t7, $ra, 0
+	srl $t4, $t3, 18
+	andi $t4, $t4, 0x3F
+	jal resultado
+         
+    	srl $t4, $t3, 12
+	andi $t4, $t4, 0x3F
+	jal resultado
+         
+	bnez $t1, printa2
+	andi $t4, $t3, 0xFC0
+	srl $t4, $t4, 6
+	jal resultado
+         
+depoisPrintar2:
+	bnez $t2, printa3
+	andi $t4, $t3, 0x3F
+	jal resultado
+	addi $ra, $t7, 0
+	jr $ra
+
+printa2:
+	li $v0, 11
+	addi, $a0, $zero, 61
+	syscall
+	j depoisPrintar2
+printa3:
+	li $v0, 11
+	addi, $a0, $zero, 61
+	syscall
+	addi $ra, $t7, 0
+	jr $ra
+fim:
+	jal barraN
+	li   $v0, 10    
+	syscall      
+##### Vai mostra a resposta final
+resultado:
+	lb $a0, base($t4)
+	li $v0, 11
+	syscall
+	jr $ra
+	
+##### final da função
+barraN: li $v0, 11           
+         addi $a0, $zero, 10  
+        syscall              
+         jr $ra               

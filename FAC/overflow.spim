@@ -1,0 +1,57 @@
+  .data          
+Overflow: .asciiz "overflow\n"
+  .text
+main: 
+
+     li $v0, 5             
+      syscall               
+      move $t9, $v0         
+      li $v0, 5             
+      syscall               
+      move $t0, $v0         
+      li $v0, 5             
+      syscall               
+      move $t1, $v0         
+      addu $a0, $t0, $t1    
+      beqz $t9, verificar_nao_overflow # verificação se tem overflow
+      j verificar_overflow # verificar se tem overflow
+      
+verificar_overflow:
+      slt $t2, $t0, $zero   # ve se t0 é positivo ou negativo 
+      slt $t3, $t1, $zero   # ve se t1 é positivo ou negativo
+      slt $t4, $a0, $zero   
+      bne $t2, $t3, print
+      bne $t3, $t4, print_overflow 
+      j print
+      
+verificar_nao_overflow:
+      sltu $t2, $t0, $a0   
+      beqz $t2, print_overflow
+      j print
+ 
+            
+exit:      
+      li   $v0, 10          
+      syscall         
+
+
+##### Se houver overflow
+        
+  .text
+print:
+	   li $v0, 1            
+           syscall              
+           jal final         
+           j exit
+
+  .text
+print_overflow: 
+	        la $a0, Overflow     
+                li $v0, 4            
+                syscall              
+                j exit
+
+final: li $v0, 11          
+         addi $a0, $zero, 10  
+         syscall             
+         jr $ra               

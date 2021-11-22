@@ -1,0 +1,65 @@
+main:
+.data
+  ADD: .asciiz"ADD: "
+  SUB: .asciiz"SUB: "
+  AND: .asciiz"AND: "
+  OR:  .asciiz"OR: "
+  XOR:  .asciiz"XOR: "
+  SLL:  .asciiz"SLL(3): "
+  SRL:   .asciiz"SRL(1): "
+  BR: .asciiz "\n"
+  
+.text
+  ##Printando a String Numero1
+    ##li $v0,4
+    ##la $a0,Numero1
+    ##syscall
+  
+  ##Lendo o numero 
+  li $v0,5
+  syscall 
+  move $t0,$v0
+  ##
+  move $t1,$zero
+  
+  
+  ##ler os numero
+    li $v0,5
+    syscall 
+    move $t3,$v0
+  move $t2,$t3 ## maior numero  
+  addi $t1,$t1,1
+  while:
+    beq $t1,$t0,saida## se iqual sair po loop
+    ##ler os numero
+    li $v0,5
+    syscall 
+    move $t3,$v0
+    ## Compara se t3 >t2
+    bgt $t3,$t2,maior
+    j continua
+    maior: 
+      move $t2,$t3## coloca o valor de t3 em t2
+      
+    continua:
+    addi $t1,$t1,1
+    j while
+  
+  saida:
+    ##Printa o valor da Adição
+    li $v0,1
+    move $a0,$t2
+    syscall
+    ## Quebra de linha no final
+    li $v0,4
+    la $a0,BR
+    syscall
+    ###
+  
+  
+  
+## So para falar que o sistema terminou 
+exit:      
+      li   $v0, 10         
+      syscall
+

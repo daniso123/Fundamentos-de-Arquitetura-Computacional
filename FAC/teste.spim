@@ -1,0 +1,53 @@
+.text
+.data
+num: .float 0.15625
+main:
+    c.le.s $f0, num #load floating point immediate
+    mfc1 $t8 $f0 #store in $t8
+
+    #extract bit 31
+    ori  $t0 $zero 0x1
+    sll  $t0 $t0 31 
+    and  $a0 $t0 $t8
+    srl  $a0 $a0 31
+
+    #print sign
+    addi $v0 $zero 1
+    syscall
+
+    #print space
+    addi $a0 $zero 32
+    addi $v0 $zero 11
+    syscall
+
+    #extract bits 23-30
+    ori  $t0 $zero 0xFF
+    sll  $t0 $t0 23
+    and  $a0 $t0 $t8
+    srl  $a0 $a0 23
+
+    #print exponent
+    addi $v0 $zero 1
+    syscall
+
+    #print space
+    addi $a0 $zero 32
+    addi $v0 $zero 11
+    syscall
+
+    #extract bits 0-22
+    ori  $t0 $zero 0xFFFF
+    sll  $t0 $t0 7
+    ori  $t0 $t0 0x7F
+    and  $a0 $t0 $t8
+
+    #print mantissa
+    addi $v0 $zero 1
+    syscall
+
+    #print new line
+    addi $a0 $zero 10
+    addi $v0 $zero 11
+    syscall
+
+    jr $ra

@@ -1,0 +1,138 @@
+main:	
+	.data
+	Soma: .asciiz "ADD: "
+	Sub: .asciiz "SUB: "
+	AND: .asciiz "AND: "
+	OR: .asciiz "OR: "
+	XOR: .asciiz "XOR: "
+	SLL: .asciiz "SLL(3): "
+	SRL: .asciiz "SRL(1): "
+	BR: .asciiz "\n"
+	.text
+	
+	li $v0,5
+	syscall
+	
+	move $t0, $v0
+	
+	li $v0,5
+	syscall
+	
+	move $t1, $v0
+	#add
+	add $t2, $t0, $t1
+	
+	  
+	li $v0,4
+	la $a0,Soma
+	syscall
+	
+	li $v0,1
+	move $a0,$t2
+	syscall
+	
+	li $v0,4
+	la $a0,BR
+	syscall
+	
+	#sub
+	sub $t2,$t0,$t1
+	li $v0,4
+	la $a0,Sub
+	syscall
+	
+	li $v0,1
+	move $a0,$t2
+	syscall
+	
+	li $v0,4
+	la $a0,BR
+	syscall
+	
+	#and
+	and $t2,$t0,$t1
+	
+	li $v0,4
+	la $a0,AND
+	syscall
+	
+	li $v0,1
+	move $a0,$t2
+	syscall
+	
+	li $v0,4
+	la $a0,BR
+	syscall
+	
+	
+	#OR
+	or $t2,$t0,$t1
+	
+
+	li $v0,4
+	la $a0,OR
+	syscall
+	
+	li $v0,1
+	move $a0,$t2
+	syscall
+	
+	li $v0,4
+	la $a0,BR
+	syscall
+	
+	
+	#XOR
+	xor $t2,$t0,$t1
+	
+	
+	li $v0,4
+	la $a0,XOR
+	syscall
+	
+	li $v0,1
+	move $a0,$t2
+	syscall
+	
+	li $v0,4
+	la $a0,BR
+	syscall
+	
+	
+	# SLL
+	sll $t2,$t0,3
+	
+	
+	li $v0,4
+	la $a0,SLL
+	syscall
+	
+	li $v0,1
+	move $a0,$t2
+	syscall
+	
+	li $v0,4
+	la $a0,BR
+	syscall
+	
+	#SRl
+	srl $t2,$t1,1
+	
+	li $v0,4
+	la $a0,SRL
+	syscall
+	
+	li $v0,1
+	move $a0,$t2
+	syscall
+	
+	li $v0,4
+	la $a0,BR
+	syscall
+	
+	
+exit:      
+      li   $v0, 10         
+      syscall    	
+	
+	

@@ -1,0 +1,14 @@
+# FAC: TRABALHO 01
+
+    .data
+str:
+   .asciiz "Ola Mundo\n"
+   .text
+main:
+    li $v0, 4
+    la $a0, str
+    syscall
+    
+    li $v0, 10
+    syscall
+
